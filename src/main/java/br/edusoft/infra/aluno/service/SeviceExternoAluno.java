@@ -49,6 +49,7 @@ public class SeviceExternoAluno implements RepositoryAluno{
         try {
           Response response = client.newCall(request).execute();
           String responseBody = response.body().string();
+          System.out.println(response.isSuccessful());
           token = responseBody;
         } catch (IOException e) {
           e.printStackTrace();
@@ -57,18 +58,21 @@ public class SeviceExternoAluno implements RepositoryAluno{
 
   @Override
   public List<Aluno> listarTodosOsAlunos() {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(URL_BASE + "recuperaAlunos");
-        httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-        CloseableHttpResponse response;
-        try {
-          response = httpClient.execute(httpGet);
-          System.out.println(response.toString());
-          response.close();
-          httpClient.close();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
+    Request request = new Request.Builder()
+    .get()
+    .url(URL_BASE + "recuperaAlunos")
+    .addHeader("content-type", "application/json")
+    .addHeader("token", token)
+    .build();
+
+    try {
+      Response response = client.newCall(request).execute();
+      System.out.println("token >>> " + token);
+      System.out.println(request);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return null;
   }
 
